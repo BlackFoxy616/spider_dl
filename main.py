@@ -105,7 +105,7 @@ async def answer(client, call):
          await app.delete_messages(call.message.chat.id,call.message.id)
          data = call.data.split("__")
          os.system(f"yt-dlp -f {data[0]} --downloader aria2c --download-archive music.txt {data[1]}")
-         title = extract(data[1])
+         title = extract(data[1])[0]
          for i in os.listdir():
               if title in i:
                 await app.send_document(call.message.chat.id, document=i)
