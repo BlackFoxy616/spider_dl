@@ -107,8 +107,9 @@ async def answer(client, call):
          os.system(f"yt-dlp -f {data[0]} --downloader aria2c --download-archive music.txt {data[1]}")
          title = extract(data[1])[0]
          for i in os.listdir():
-              if title in i:
-                await app.send_video(call.message.chat.id, video=i)
+              if i.endswith('mp4') or i.endswith('mp3') or i.endswith('webm'):
+                os.system(f'''vcsi """{i}""" -g 2x2 --metadata-position hidden -o """{i.replace('.mp4','.png')}""" ''')
+                await app.send_video(call.message.chat.id,video=i,caption=title,thumb=i.replace(".mp4",".png"))
              
                 
 
