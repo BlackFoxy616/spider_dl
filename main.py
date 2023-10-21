@@ -108,7 +108,7 @@ async def answer(client, call):
          title = extract(data[1])[0]
          for i in os.listdir():
               if title in i:
-                await app.send_document(call.message.chat.id, document=i)
+                await app.send_video(call.message.chat.id, video=i)
              
                 
 
