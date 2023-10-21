@@ -56,7 +56,7 @@ async def start_command(client,message):
          co=0
          temp = []
          for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio','Cancel']:
-             temp.append(InlineKeyboardButton(i, callback_data =i+f"__{query[1]}"))
+             temp.append(InlineKeyboardButton(i, callback_data =i"))
              co+=1
              if co%2==0 or i == len(['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio'])-1:
                button_list.append(temp)
@@ -106,7 +106,7 @@ async def answer(client, call):
          elif data[0] in ['Audio']:
                   format= '--extract-audio --audio-format mp3'
          id = call.message.id
-         cmd = f"""yt-dlp --downloader aria2c --download-archive music.txt {format} {data[1]}"""
+         cmd = f"""yt-dlp --downloader aria2c --download-archive music.txt {format} {query[1]}"""
          #print(cmd)
          os.system(cmd)
          for i in os.listdir():
