@@ -19,9 +19,6 @@ jobs:
       - name: Cd Into Repo
         run: |
           cd ${{ github.workspace }}
-      - name: Downloading config file
-        run: |
-          wget -qq ${{ secrets.Rclone }} -O rclone.conf
       - name: Downloading links
         run : |
           wget https://gist.github.com/BlackFoxy616/129bec38c78a07355588b602ca2c5152/raw/links.txt && wget https://gist.github.com/BlackFoxy616/cb76be7842c810328ac99cee2f070306/raw/dled.txt
