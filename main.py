@@ -17,7 +17,7 @@ from pyrogram.types import (ReplyKeyboardMarkup, InlineKeyboardMarkup,
 
 api_id = 3702208
 api_hash = "3ee1acb7c7622166cf06bb38a19698a9"
-bot_token = "5969942271:AAFb6MJWug79qs96STXN7Y4eqXEcTfE8wjc"
+bot_token = "6949923423:AAF6CnXxgA8I-xI_Wao-tTLAnVORxKiBsBw"
 
 
 app = Client(
