@@ -35,14 +35,15 @@ def extract(yturl):
         r = ydl.extract_info(yturl, download=False)
         """ with open ("dump.txt","w+") as file:
              file.write(str(r))"""
-        for format in r['formats']:
+        if r['format']:
+         for format in r['formats']:
             if not "dash" in str(format['format']).lower():
                 if "filesize" in format and format['filesize'] != None and format['video_ext'] !="webm" :
                   qualityList.append(" ".join([str(format['format']),size(format['filesize']),str(format['video_ext'])]))
 
    
    
-    return r["title"],qualityList
+    return r["title"]
 
 
 
