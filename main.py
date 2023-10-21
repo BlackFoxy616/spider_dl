@@ -48,28 +48,23 @@ def extract(yturl):
 
 
 
+
 @app.on_message(filters.command("dl"))
 async def start_command(client,message):
          query = message.text.split()
          button_list =[]
-         info = extract(query[1])
          co=0
          temp = []
-         for i in range(len(info[1])):
-             X = info[1][i].split(" ")
-             Y = X[3].replace("(","").replace(")","")+","+X[5]+","+X[4]
-             if X[3] == "only":
-                  Y = X[4].replace("(","").replace(")","")+", mp3 ,"+X[5]
-             temp.append(InlineKeyboardButton( Y, info[1][i].split(" ")[0]+f"__{query[1]}"))
+         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio','Cancel']:
+             temp.append(InlineKeyboardButton(i, callback_data =i+f"__{query[1]}"))
              co+=1
-             if co%2==0 or i == len(info[1])-1:
+             if co%2==0 or i == len(['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio'])-1:
                button_list.append(temp)
                temp=[]
           
          reply_markup=InlineKeyboardMarkup(button_list)
          choice = await app.send_message(
-            message.chat.id,"Select The Format:",reply_markup=reply_markup)
-        
+            message.chat.id,"Select The Format:",reply_markup=reply_markup)        
 
 
 
@@ -100,12 +95,20 @@ def extract2(yturl):
 
 
 
+
 @app.on_callback_query()
 async def answer(client, call):
-         await app.delete_messages(call.message.chat.id,call.message.id)
-         data = call.data.split("__")
-         os.system(f"yt-dlp -f {data[0]} --downloader aria2c --download-archive music.txt {data[1]}")
-         title = extract(data[1])[0]
+      await app.delete_messages(call.message.chat.id,call.message.id)
+      data = call.data.split("__")
+      if data[0] != 'Cancel': 
+         if data[0] in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
+                 format = f'-f bv*[height<=?{data[0]}][ext=mp4]+ba[ext=m4a]/b[height<=?{data[0]}]'
+         elif data[0] in ['Audio']:
+                  format= '--extract-audio --audio-format mp3'
+         id = call.message.id
+         cmd = f"""yt-dlp --downloader aria2c --download-archive music.txt {format} {data[1]}"""
+         #print(cmd)
+         os.system(cmd)
          for i in os.listdir():
               if i.endswith('mp4') or i.endswith('mp3') or i.endswith('webm'):
                 os.system(f'''vcsi """{i}""" -g 2x2 --metadata-position hidden -o """{i.replace('.mp4','.png')}""" ''')
