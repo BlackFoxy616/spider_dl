@@ -109,10 +109,11 @@ async def answer(client, call):
          id = call.message.id
          cmd = f"""yt-dlp --downloader aria2c --download-archive music.txt {format} {query[1]}"""
          print(cmd)
+         title = extract(query[1])[0]
          os.system(cmd)
          for i in os.listdir():
               if i.endswith('mp4') or i.endswith('mp3') or i.endswith('webm'):
-                os.system(f'''vcsi """{i}""" -g 2x2 --metadata-position hidden -o """{i.replace('.mp4','.png')}""" ''')
+                os.system(f'''vcsi """{i}""" -g 1x1 --metadata-position hidden -o """{i.replace('.mp4','.png')}""" ''')
                 await app.send_video(call.message.chat.id,video=i,caption=title,thumb=i.replace(".mp4",".png"))
                 os.remove(i)
                 os.remove(i.replace('.mp4','.jpg'))
