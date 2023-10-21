@@ -60,7 +60,7 @@ async def start_command(client,message):
              Y = X[3].replace("(","").replace(")","")+","+X[5]+","+X[4]
              if X[3] == "only":
                   Y = X[4].replace("(","").replace(")","")+", mp3 ,"+X[5]
-             temp.append(InlineKeyboardButton( message=Y, callback_data =info[1][i].split(" ")[0]+f"__{query[1]}"))
+             temp.append(InlineKeyboardButton( Y, info[1][i].split(" ")[0]+f"__{query[1]}"))
              co+=1
              if co%2==0 or i == len(info[1])-1:
                button_list.append(temp)
