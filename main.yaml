@@ -1,0 +1,41 @@
+name: Phvdl
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '30 6 * * *'
+jobs:
+  run-sync-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install RClone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+          rclone help
+      - name: Pyrogram
+        run: |
+          pip install pyrogram && pip install tgcrypto && pip install vcsi && pip install psycopg2 && pip install fpdf && pip install pillow
+      - name: Checkout repository code
+        uses: actions/checkout@v2
+      - name: Cd Into Repo
+        run: |
+          cd ${{ github.workspace }}
+      - name: Downloading config file
+        run: |
+          wget -qq ${{ secrets.Rclone }} -O rclone.conf
+      - name: Downloading links
+        run : |
+          wget https://gist.github.com/BlackFoxy616/129bec38c78a07355588b602ca2c5152/raw/links.txt && wget https://gist.github.com/BlackFoxy616/cb76be7842c810328ac99cee2f070306/raw/dled.txt
+      - name: Setup yt-dlp
+        uses: AnimMouse/setup-yt-dlp@v1
+        with:
+          with-ffmpeg: true
+      - name: Running the Script 
+        run: |
+          python main.py
+      - name: Deploy
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.TOKEN }}
+          gist_id: cb76be7842c810328ac99cee2f070306
+          file_path: dled.txt
+          file_type: text
