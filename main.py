@@ -56,7 +56,7 @@ async def start_command(client,message):
          co=0
          temp = []
          for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio','Cancel']:
-             temp.append(InlineKeyboardButton(i, callback_data =i"))
+             temp.append(InlineKeyboardButton(i, callback_data =i))
              co+=1
              if co%2==0 or i == len(['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio'])-1:
                button_list.append(temp)
