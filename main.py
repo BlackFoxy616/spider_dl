@@ -110,6 +110,9 @@ async def answer(client, call):
               if i.endswith('mp4') or i.endswith('mp3') or i.endswith('webm'):
                 os.system(f'''vcsi """{i}""" -g 2x2 --metadata-position hidden -o """{i.replace('.mp4','.png')}""" ''')
                 await app.send_video(call.message.chat.id,video=i,caption=title,thumb=i.replace(".mp4",".png"))
+                os.remove(i)
+                os.remove(i.replace('.mp4','.jpg'))
+                os.remove(i.replace('.mp4','.png'))
              
                 
 
