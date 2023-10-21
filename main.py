@@ -108,7 +108,7 @@ async def answer(client, call):
                   format= '--extract-audio --audio-format mp3'
          id = call.message.id
          cmd = f"""yt-dlp --downloader aria2c --download-archive music.txt {format} {query[1]}"""
-         #print(cmd)
+         print(cmd)
          os.system(cmd)
          for i in os.listdir():
               if i.endswith('mp4') or i.endswith('mp3') or i.endswith('webm'):
