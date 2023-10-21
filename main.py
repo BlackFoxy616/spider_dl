@@ -51,6 +51,7 @@ def extract(yturl):
 
 @app.on_message(filters.command("dl"))
 async def start_command(client,message):
+         global query 
          query = message.text.split()
          button_list =[]
          co=0
