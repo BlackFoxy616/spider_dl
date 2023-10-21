@@ -60,7 +60,7 @@ async def start_command(client,message):
              Y = X[3].replace("(","").replace(")","")+","+X[5]+","+X[4]
              if X[3] == "only":
                   Y = X[4].replace("(","").replace(")","")+", mp3 ,"+X[5]
-             temp.append(InlineKeyboardButton(id="1", message=Y, callback_data =info[1][i].split(" ")[0]+f"__{query[1]}"))
+             temp.append(InlineKeyboardButton( message=Y, callback_data =info[1][i].split(" ")[0]+f"__{query[1]}"))
              co+=1
              if co%2==0 or i == len(info[1])-1:
                button_list.append(temp)
@@ -92,8 +92,8 @@ def extract2(yturl):
 
 
 
-G =  extract2("https://youtube.com/playlist?list=PLxnyxqL6KA4jO2gQBRj560DGCFH4b5tIe&si=pTTeEk292wd1Qvy0")
-print(G)
+#G =  extract2("https://youtube.com/playlist?list=PLxnyxqL6KA4jO2gQBRj560DGCFH4b5tIe&si=pTTeEk292wd1Qvy0")
+#print(G)
 
         
 
@@ -103,13 +103,14 @@ print(G)
 @app.on_callback_query()
 async def answer(client, call):
          await app.delete_messages(call.message.chat.id,call.message.id)
-         print(call.id)
          data = call.data.split("__")
-         id = call.message.id
-         print(id)
-         os.system(f"yt-dlp -f {data[0]} --download-archive music.txt {data[1]}")
+         os.system(f"yt-dlp -f {data[0]} --downloader aria2c --download-archive music.txt {data[1]}")
+         title = extract(data[1])
          for i in os.listdir():
-                pass
+              if title in i:
+                await app.send_document(call.message.chat.id, document=i)
+             
+                
 
 
 print("Bot Started ..!!")
