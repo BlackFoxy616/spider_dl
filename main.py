@@ -258,9 +258,9 @@ async def answer(client, call):
               elif i.endswith('mp3'):
                 await app.send_audio(call.message.chat.id,audio='downloads/'+i,caption="_".join(i.split(".")[0:-1]))
               try:
-                os.remove(i)
-                #os.remove(i.replace('.mp4','.jpg'))
-                os.remove(i.replace('.mp4','.png'))
+                os.remove('downloads/'+i)
+                #os.remove('downloads/'+i.replace('.mp4','.jpg'))
+                os.remove('downloads/'+i.replace('.mp4','.png'))
               except:
                  pass
 
