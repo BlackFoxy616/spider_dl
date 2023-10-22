@@ -254,9 +254,9 @@ async def answer(client, call):
          for i in os.listdir("downloads"):
               if i.endswith('mp4') or i.endswith('webm'):
                 os.system(f'''vcsi """{i}""" -g 1x1 --metadata-position hidden -o """{i.replace('.mp4','.png')}""" ''')
-                await app.send_video(call.message.chat.id,video=i,caption="_".join(i.split(".")[0:-1]),thumb=i.replace(".mp4",".png"))
+                await app.send_video(call.message.chat.id,video='downloads/'+i,caption="_".join(i.split(".")[0:-1]),thumb=i.replace(".mp4",".png"))
               elif i.endswith('mp3'):
-                await app.send_audio(call.message.chat.id,audio=i,caption="_".join(i.split(".")[0:-1]))
+                await app.send_audio(call.message.chat.id,audio='downloads/'+i,caption="_".join(i.split(".")[0:-1]))
               try:
                 os.remove(i)
                 #os.remove(i.replace('.mp4','.jpg'))
