@@ -1,14 +1,15 @@
 from pyrogram import Client, filters
-import time,csv,os
+import time,csv,os,re
 import speedtest
-import yt_dlp
 import subprocess
 import threading
 from hurry.filesize import size
 from pyrogram.types import (ReplyKeyboardMarkup, InlineKeyboardMarkup,
                             InlineKeyboardButton)
 import asyncio
-
+from datetime import *
+import pytz,yt_dlp
+now=datetime.now(pytz.timezone("Asia/Kolkata"))
 
 #os.system("wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux")
 #os.system("mv yt-dlp_linux yt-dlp")
@@ -51,30 +52,6 @@ def extract(yturl):
 
 
 
-"""
-@app.on_message(filters.command("dl"))
-async def start_command(client,message):
-      try:
-         global query 
-         query = message.text.split()
-         button_list =[]
-         co=0
-         temp = []
-         for i in ['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio','Cancel']:
-             temp.append(InlineKeyboardButton(i, callback_data =i))
-             co+=1
-             if co%2==0 or i == len(['144', '240', '360', '480', '720', '1080', '1440', '2160','Audio'])-1:
-               button_list.append(temp)
-               temp=[]
-          
-         reply_markup=InlineKeyboardMarkup(button_list)
-         choice = await app.send_message(
-            message.chat.id,"Select The Format:",reply_markup=reply_markup)        
-      except Exception as error:
-          await app.send_message(
-            message.chat.id,f"Error Occurred Contact Owner About This ,\n{error}")
-
-"""
 
 
 
@@ -86,13 +63,49 @@ def download_and_sendar(link, chat_id):
 
     file_name = link.split("/")[-1]  # Extracting the filename from the link
     file_path = os.path.join(download_path, file_name)
-    command = ["aria2c", "--seed-time=0", "--summary-interval=1", "-x", "16", "-s", "16", "-d", download_path, link]
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, universal_newlines=True)
+    
+    command = [
+        "aria2c",
+        "--seed-time=0",
+        "--summary-interval=1",
+        "-x", "16",
+        "-s", "16",
+        "-d", download_path,
+        link
+    ]
+    start_time = datetime.now() 
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+
+    sts = app.send_message(chat_id,text=f"Download Started....")
+    st_id = sts.id
+    old = ""
     for line in process.stdout:
-        app.send_message(chat_id, text=f"Downloading: {line.strip()}")
+        if 'MiB' in line:
+               spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
+               siz=line.strip().split()[1].replace("/"," of ")[:-5]
+               con = stats = f'<b>├  FileName : </b>{file_name}\n'\
+                             f'<b>├  Engine : </b>Aria2c\n'\
+                             f'<b>├  Size : </b>{siz}\n'\
+                             f'<b>├  Speed : </b>{spe}\n'\
+                             f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time).split(":")[2].split(".")[0]}\n\n'
+               if con != old:
+                 #print(old,con)
+                 app.edit_message_text(chat_id,st_id,text=con)
+                 old = con
+                 #print(old,con)
+        
+        # Extract download speed
+        match = re.search(r'Speed: ([0-9.]+)MiB/s', line)
+        
+        if "MiB/s" in line :
+            speed = line.split("|")[2].strip()
+            #sp = app.edit_message_text(chat_id,st_id,text=f"Average Download Speed: {speed}")
+            
+
     process.wait()
+
     if process.returncode == 0:
-        app.send_message(chat_id, text=f"Download completed: {file_name}")
+        app.edit_message_text(chat_id,st_id,text=f"Download completed: {file_name}")
         app.send_document(chat_id, document=file_path)
         os.remove(file_path)
         print(f"File deleted: {file_path}")
@@ -103,7 +116,7 @@ def download_and_sendar(link, chat_id):
 
 
 
-async def download_and_sendyt(chat_id, format_option, link):
+def download_and_sendyt(chat_id, format_option, link):
     try:
         download_path = "downloads"
         os.makedirs(download_path, exist_ok=True)
@@ -115,36 +128,65 @@ async def download_and_sendyt(chat_id, format_option, link):
             else ''
         )
 
-        cmd = f'./yt-dlp {link} --downloader aria2c {format_arg} '
+        cmd = f'./yt-dlp """{link}""" --downloader aria2c {format_arg} '
         print(cmd)
 
-        result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+        process = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        sts = app.send_message(chat_id,text=f"Download Started....")
+        st_id = sts.id
+        old = ""
+        for line in process.stdout:
+                print(line)
+                if '%' in line:
+                    spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
+                    siz=line.strip().split()[1].replace("/"," of ")[:-5]
+                    con = stats = f'<b>├  FileName : </b>{extract(link)[0]}\n'\
+                                  f'<b>├  Engine : </b>Yt-dlp\n'\
+                                  f'<b>├  Size : </b>{siz}\n'\
+                                  f'<b>├  Speed : </b>{spe}\n'\
+                                  f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time).split(":")[2].split(".")[0]}\n\n'
+                    if con != old:
+                       #print(old,con)
+                       app.edit_message_text(chat_id,st_id,text=con)
+                       old = con
+                       #print(old,con)
 
-        if result.returncode != 0:
-            raise Exception(f"Error occurred: {result.stderr.strip()}")
+        process.wait()
 
-        thumbnail = f"{link.split('/')[-1].replace('.mp4', '.png')}"
-        os.system(f'vcsi "{link.split("/")[-1]}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
-        await app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
+        if process.returncode != 0:
+            raise Exception(f"Error occurred: {process.stderr.strip()}")
 
-        try:
-            os.remove(link.split("/")[-1])
-            os.remove(link.split("/")[-1].replace('.mp4', '.jpg'))
-            os.remove(link.split("/")[-1].replace('.mp4', '.png'))
-        except:
-            pass
+        for i in os.listdir():
+               if i.endswith("mp4") or i.endswith("mp3"):
+                 thumbnail = f"{link.split('/')[-1].replace('.mp4', '.png')}"
+                 os.system(f'vcsi "{link.split("/")[-1]}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
+                 app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
+
+                 try:
+                  os.remove(link.split("/")[-1])
+                  os.remove(link.split("/")[-1].replace('.mp4', '.jpg'))
+                  os.remove(link.split("/")[-1].replace('.mp4', '.png'))
+                 except:
+                   pass
 
     except Exception as error:
-        await app.send_message(chat_id, text=f"Error occurred: {error}")
+        app.edit_message_text(chat_id,st_id,text=f"Error occurred: {error}")
 
 
-def download_and_send_concurrently(links, chat_id):
+
+def download_and_send_concurrently(links, chat_id,engine,formats):
     threads = []
+    if engine=="y":
+        for link in links:
+           thread = threading.Thread(target=download_and_sendyt, args=(chat_id,formats,link))
+           threads.append(thread)
+           thread.start()
+    else:
+        for link in links:
+          thread = threading.Thread(target=download_and_sendar, args=(link, chat_id))
+          threads.append(thread)
+          thread.start()
 
-    for link in links:
-        thread = threading.Thread(target=download_and_send, args=(link, chat_id))
-        threads.append(thread)
-        thread.start()
 
     for thread in threads:
         thread.join()
@@ -195,24 +237,32 @@ async def start_command(client, message):
 
 @app.on_callback_query()
 async def answer(client, call):
-    try:
-        await app.delete_messages(call.message.chat.id, call.message.id)
-        data = call.data.split("__")
-
-        if len(data) >= 2 and data[0] != 'Cancel':
-            format_option = data[0]
-            unique_id = data[1]
-
-            # Retrieve link from shared_data
-            link = shared_data[int(unique_id)]
-            print(link)
-
-            # Download asynchronously
-            await asyncio.gather(download_and_sendyt(call.message.chat.id, format_option, link))
-
-    except Exception as error:
-        print(error)
-
+      await app.delete_messages(call.message.chat.id,call.message.id)
+      data = call.data.split("__")
+      if data[0] != 'Cancel': 
+         if data[0] in ['144', '240', '360', '480', '720', '1080', '1440', '2160']:
+                 format = f'-f "bv*[height<=?{data[0]}][ext=mp4]+ba[ext=m4a]/b[height<=?{data[0]}]"'
+         elif data[0] in ['Audio']:
+                  format= '--extract-audio --audio-format mp3'
+         id = call.message.id
+         unique_id = data[1]
+         link = shared_data[int(unique_id)]
+         cmd = f"""yt-dlp --downloader aria2c -P "downloads" {format} {link}"""
+         print(cmd)
+         
+         os.system(cmd)
+         for i in os.listdir("downloads"):
+              if i.endswith('mp4') or i.endswith('webm'):
+                os.system(f'''vcsi """{i}""" -g 1x1 --metadata-position hidden -o """{i.replace('.mp4','.png')}""" ''')
+                await app.send_video(call.message.chat.id,video=i,caption="_".join(i.split(".")[0:-1]),thumb=i.replace(".mp4",".png"))
+              elif i.endswith('mp3'):
+                await app.send_audio(call.message.chat.id,audio=i,caption="_".join(i.split(".")[0:-1]))
+              try:
+                os.remove(i)
+                #os.remove(i.replace('.mp4','.jpg'))
+                os.remove(i.replace('.mp4','.png'))
+              except:
+                 pass
 
 
              
@@ -231,7 +281,7 @@ def process_links(client, message):
     links = message.text.split()[1:]
 
     if links:
-        download_and_send_concurrently(links, chat_id)
+        download_and_send_concurrently(links, chat_id,"a",None)
 
 
 
@@ -240,3 +290,4 @@ def process_links(client, message):
 
 
 app.run()
+  
