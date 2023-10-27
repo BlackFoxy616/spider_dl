@@ -21,7 +21,8 @@ now=datetime.now(pytz.timezone("Asia/Kolkata"))
 def fetch_hrefs(url):
     try:
         response = requests.get(url)
-        soup = BeautifulSoup(response.text, 'html.parser')allowed_extensions = {'.mp4', '.jpg', '.png', '.jpeg', '.mp3', '.mkv'}
+        soup = BeautifulSoup(response.text, 'html.parser')
+        allowed_extensions = {'.mp4', '.jpg', '.png', '.jpeg', '.mp3', '.mkv'}
         hrefs = [link.get('href') for link in soup.find_all('a', href=True) if link.get('href').lower().endswith(tuple(allowed_extensions))]
         return hrefs
     except Exception as e:
