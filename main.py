@@ -225,7 +225,8 @@ async def get_hrefs_handler(client,message):
         url = message.text.split()[1]
         hrefs = fetch_hrefs(url)
         with open("urls.txt","w+") as urls:
-              urls.writelines(hrefs)
+          for i in hrefs:
+              urls.write(url+i+"\n")
         await app.send_document(message.chat.id,document="urls.txt")
 
     except IndexError:
