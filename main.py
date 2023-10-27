@@ -125,6 +125,64 @@ def download_and_sendar(link, chat_id):
         app.send_message(chat_id, text=error_message)
 
 
+def download_and_sendfi(file_path, chat_id):
+    download_path = "downloads"
+    os.makedirs(download_path, exist_ok=True)
+
+    file_name = link.split("/")[-1]  # Extracting the filename from the link
+    file_path = os.path.join(download_path, file_name)
+    
+    command = [
+        "aria2c",
+        "-i",
+        file_path
+        "--seed-time=0",
+        "--summary-interval=1",
+        "-x", "16",
+        "-s", "16",
+        "-d", download_path
+    ]
+    start_time = datetime.now() 
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+
+    sts = app.send_message(chat_id,text=f"Download Started....")
+    st_id = sts.id
+    old = ""
+    for line in process.stdout:
+        if 'MiB' in line:
+               spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
+               siz=line.strip().split()[1].replace("/"," of ")[:-5]
+               con = stats = f'<b>├  FileName : </b>{file_name}\n'\
+                             f'<b>├  Engine : </b>Aria2c\n'\
+                             f'<b>├  Size : </b>{siz}\n'\
+                             f'<b>├  Speed : </b>{spe}\n'\
+                             f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time).split(":")[2].split(".")[0]}\n\n'
+               if con != old:
+                 #print(old,con)
+                 app.edit_message_text(chat_id,st_id,text=con)
+                 old = con
+                 #print(old,con)
+        
+        # Extract download speed
+        match = re.search(r'Speed: ([0-9.]+)MiB/s', line)
+        
+        if "MiB/s" in line :
+            speed = line.split("|")[2].strip()
+            #sp = app.edit_message_text(chat_id,st_id,text=f"Average Download Speed: {speed}")
+            
+
+    process.wait()
+
+    if process.returncode == 0:
+        app.edit_message_text(chat_id,st_id,text=f"Download completed: {file_name}")
+        app.send_document(chat_id, document=file_path)
+        os.remove(file_path)
+        print(f"File deleted: {file_path}")
+    else:
+        error_message = f"Download failed for link: {link}"
+        app.send_message(chat_id, text=error_message)
+  
+
 
 
 def download_and_sendyt(chat_id, format_option, link):
@@ -310,13 +368,7 @@ def process_links(client, message):
 def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
-    links =[]
-    with open(file_path) as file:
-      for i in file.readlines():
-        links.append(i)
-    if links:
-        download_and_send_concurrently(links, chat_id,"a",None)
-
+    
         
 
 
