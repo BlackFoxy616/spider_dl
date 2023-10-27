@@ -3,6 +3,8 @@ import time,csv,os,re
 import speedtest
 import subprocess
 import threading
+import requests
+from bs4 import BeautifulSoup
 from hurry.filesize import size
 from pyrogram.types import (ReplyKeyboardMarkup, InlineKeyboardMarkup,
                             InlineKeyboardButton)
@@ -16,6 +18,14 @@ now=datetime.now(pytz.timezone("Asia/Kolkata"))
 
 
 
+def fetch_hrefs(url):
+    try:
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')allowed_extensions = {'.mp4', '.jpg', '.png', '.jpeg', '.mp3', '.mkv'}
+        hrefs = [link.get('href') for link in soup.find_all('a', href=True) if link.get('href').lower().endswith(tuple(allowed_extensions))]
+        return hrefs
+    except Exception as e:
+        return str(e)
 
 api_id = 3702208
 api_hash = "3ee1acb7c7622166cf06bb38a19698a9"
@@ -208,7 +218,17 @@ def start_command(client, message):
     )
     message.reply_text(help_text)
 
+@app.on_message(filters.command("get"))
+def get_hrefs_handler(client: Client, message: Message):
+    try:
+        url = message.text.split()[1]
+        hrefs = fetch_hrefs(url)
+        with open("urls.txt","w+") as urls:
+              urls.writelines(hrefs)
+        await app.send_document(message.chat.id,document="urls.txt")
 
+    except IndexError:
+        message.reply_text("Please provide a valid URL after the command.")
 
 
 @app.on_message(filters.command("dl"))
@@ -284,6 +304,18 @@ def process_links(client, message):
         download_and_send_concurrently(links, chat_id,"a",None)
 
 
+@app.on_message(filters.document)
+def handle_document(client, message):
+    chat_id = message.chat.id
+    file_path = client.download_media(message.document)
+    links =[]
+    with open(file_path) as file:
+      for i in file.readlines():
+        links.append(i)
+    if links:
+        download_and_send_concurrently(links, chat_id,"a",None)
+
+        
 
 
 
