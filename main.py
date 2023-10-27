@@ -135,7 +135,7 @@ def download_and_sendfi(file_path, chat_id):
     command = [
         "aria2c",
         "-i",
-        file_path
+        file_path,
         "--seed-time=0",
         "--summary-interval=1",
         "-x", "16",
