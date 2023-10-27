@@ -220,7 +220,7 @@ def start_command(client, message):
     message.reply_text(help_text)
 
 @app.on_message(filters.command("get"))
-def get_hrefs_handler(client: Client, message: Message):
+async def get_hrefs_handler(client: Client, message: Message):
     try:
         url = message.text.split()[1]
         hrefs = fetch_hrefs(url)
