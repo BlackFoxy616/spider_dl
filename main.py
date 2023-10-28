@@ -479,7 +479,7 @@ def handle_document(client, message):
     file_path = client.download_media(message.document)
     files=[]
     with open(file_path) as file:
-     sts = app.send_message(chat_id,text=f"Download Started....\n\nNo.of Links :{len(file.readlines()}")
+     sts = app.send_message(chat_id,text=f"Download Started....\n\nNo.of Links :{len(file.readlines())}")
      try:
       for link in file.readlines():
         app.edit_message_text(chat_id,sts.id,text=f"Downloading:{file.readlines().index(link)+1}of{len(file.readlines())}")
