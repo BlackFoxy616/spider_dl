@@ -188,10 +188,20 @@ def download_and_sendar(link, chat_id):
     process.wait()
 
     if process.returncode == 0:
-        app.edit_message_text(chat_id,st_id,text=f"Download completed: {file_name}")
-        app.send_document(chat_id, document=file_path)
-        os.remove(file_path)
-        print(f"File deleted: {file_path}")
+        for i in os.listdir("downloads"):
+               if i.endswith("mp4") or i.endswith("mp3"):
+                 thumbnail = f"{i.replace('.mp4', '.png')}"
+                 os.system(f'vcsi "{"downloads/"+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
+                 app.send_video(chat_id, video="downloads/"+i, caption=i, thumb=thumbnail)
+               elif i.endswith("jpg") or i.endswith("png") :
+                 app.send_photo(chat_id, photo="downloads/"+i, caption=i)
+
+               try:
+                  os.remove(i)
+                  os.remove(thumbnail)
+                 
+               except:
+                   pass
     else:
         error_message = f"Download failed for link: {link}"
         app.send_message(chat_id, text=error_message)
@@ -357,7 +367,8 @@ def start_command(client, message):
     help_text = (
         "Send me links using the following commands:\n"
         "/dl <link> - Download using yt-dlp\n"
-        "/leech <link1> <link2> ... - Bulk download using aria2c"
+        "/leech <link1> <link2> ... - Bulk download using aria2c\n"
+        "/speedtest - To Test Speed"
     )
     message.reply_text(help_text)
 
