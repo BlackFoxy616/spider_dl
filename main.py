@@ -233,7 +233,7 @@ def download_and_sendfi(file_path, chat_id):
         if 'MiB' in line:
                spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
                siz=line.strip().split()[1].replace("/"," of ")[:-5]
-               con = stats = f'<b>├  FileName : </b>Multiple Files\n'\
+               con = stats = f'<b>╭─  FileName : </b>Multiple Files\n'\
                              f'<b>├  Engine : </b>Aria2c\n'\
                              f'<b>├  Size : </b>{siz}\n'\
                              f'<b>├  Speed : </b>{spe}\n'\
@@ -299,7 +299,7 @@ def download_and_sendyt(chat_id, format_option, link):
                 if '%' in line:
                     spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
                     siz=line.strip().split()[1].replace("/"," of ")[:-5]
-                    con = stats = f'<b>├  FileName : </b>{extract(link)[0]}\n'\
+                    con = stats = f'<b>╭─  FileName : </b>{extract(link)[0]}\n'\
                                   f'<b>├  Engine : </b>Yt-dlp\n'\
                                   f'<b>├  Size : </b>{siz}\n'\
                                   f'<b>├  Speed : </b>{spe}\n'\
@@ -448,7 +448,7 @@ async def start_command(client,message):
     for category, data in result[0].items():
         text+=f"\t《 {category} 》\n"
         for key, value in data.items():
-            text+=f"{key}: {value}\n"
+            text+=f'<b>├ {key}: {value}\n'
     await app.send_photo(message.chat.id,photo=result[1],caption=text)
 
 
