@@ -129,8 +129,8 @@ def download_and_sendfi(file_path, chat_id):
     download_path = "downloads"
     os.makedirs(download_path, exist_ok=True)
 
-    file_name = link.split("/")[-1]  # Extracting the filename from the link
-    file_path = os.path.join(download_path, file_name)
+    #file_name = link.split("/")[-1]  # Extracting the filename from the link
+    #file_path = os.path.join(download_path, file_name)
     
     command = [
         "aria2c",
