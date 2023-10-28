@@ -466,7 +466,7 @@ def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
     with open(file_path) as file:
-     sts = app.send_message(chat_id,text=fDownload Started....")
+     sts = app.send_message(chat_id,text=f"Download Started....")
      try:
       for link in file.readlines():
         os.system(f"wget {link} ")
