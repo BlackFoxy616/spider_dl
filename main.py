@@ -466,9 +466,11 @@ def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
     with open(file_path) as file:
+     download_path = "downloads"
+     os.makedirs(download_path, exist_ok=True)
      try:
       for link in file.readlines():
-        os.system("wget {link} -P '/downloads' ")
+        os.system(f"wget {link} -P '/downloads' ")
         for i in os.listdir('/downloads'):
                if i.endswith("mp4") or i.endswith("mp3"):
                  thumbnail = f"{i.replace('.mp4', '.png')}"
