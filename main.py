@@ -476,7 +476,7 @@ def handle_document(client, message):
                  os.system(f'''vcsi "{i}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
                  app.send_video(chat_id, video=i, caption=i, thumb=thumbnail)
                elif i.endswith.v("jpg") or i.endswith("png") :
-                 app.send_photo(chat_id, photo='i, caption=i)
+                 app.send_photo(chat_id, photo=i, caption=i)
 
                try:
                   os.remove(i)
