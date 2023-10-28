@@ -152,7 +152,7 @@ def download_and_sendfi(file_path, chat_id):
         if 'MiB' in line:
                spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
                siz=line.strip().split()[1].replace("/"," of ")[:-5]
-               con = stats = f'<b>├  FileName : </b>{file_name}\n'\
+               con = stats = f'<b>├  FileName : </b>Multiple Files\n'\
                              f'<b>├  Engine : </b>Aria2c\n'\
                              f'<b>├  Size : </b>{siz}\n'\
                              f'<b>├  Speed : </b>{spe}\n'\
