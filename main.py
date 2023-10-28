@@ -466,7 +466,7 @@ def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
     with open(file_path) as file:
-     sts = app.send_message(chat_id,text=f"Download Started...."))
+     sts = app.send_message(chat_id,text=fDownload Started....")
      try:
       for link in file.readlines():
         os.system(f"wget {link} ")
@@ -475,7 +475,7 @@ def handle_document(client, message):
                  thumbnail = f"{i.replace('.mp4', '.png')}"
                  os.system(f'''vcsi "{i}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
                  app.send_video(chat_id, video=i, caption=i, thumb=thumbnail)
-               elif i.endswith("jpg") or i.endswith("png") :
+               elif i.endswith.v("jpg") or i.endswith("png") :
                  app.send_photo(chat_id, photo='i, caption=i)
 
                try:
