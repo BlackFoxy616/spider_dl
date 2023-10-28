@@ -11,7 +11,6 @@ from pyrogram.types import (ReplyKeyboardMarkup, InlineKeyboardMarkup,
 import asyncio
 from datetime import *
 import pytz,yt_dlp
-import speedtest
 import geocoder
 from datetime import datetime
 
