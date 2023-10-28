@@ -174,18 +174,16 @@ def download_and_sendfi(file_path, chat_id):
     process.wait()
 
     if process.returncode == 0:
-        for i in os.listdir():
+        for i in os.listdir("downloads"):
                if i.endswith("mp4") or i.endswith("mp3"):
-                 thumbnail = f"{link.split('/')[-1].replace('.mp4', '.png')}"
-                 os.system(f'vcsi "{link.split("/")[-1]}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
-                 app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
+                 thumbnail = f"{i.replace('.mp4', '.png')}"
+                 os.system(f'vcsi "{"downloads/"+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
+                 app.send_video(chat_id, video="downloads/"+i, caption=i, thumb=thumbnail)
                elif i.endswith("jpg") or i.endswith("png") :
-                 app.send_photo(chat_id, photo=link.split("/")[-1], caption=link.split("/")[-1])
+                 app.send_photo(chat_id, photo="downloads/"+i, caption=i)
 
                try:
-                  os.remove(link.split("/")[-1])
-                  os.remove(link.split("/")[-1].replace('.mp4', '.jpg'))
-                  os.remove(link.split("/")[-1].replace('.mp4', '.png'))
+                  os.remove(i)
                  
                except:
                    pass
@@ -383,7 +381,8 @@ def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
     
-        
+    download_and_sendfi(file_path,chat_id)
+      
 
 
 
