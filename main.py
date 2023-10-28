@@ -472,7 +472,7 @@ def handle_document(client, message):
         for i in os.listdir('/downloads'):
                if i.endswith("mp4") or i.endswith("mp3"):
                  thumbnail = f"{i.replace('.mp4', '.png')}"
-                 os.system(f'vcsi "{'/downloads'+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
+                 os.system(f'''vcsi "{'/downloads'+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"''')
                  app.send_video(chat_id, video='/downloads'+i, caption=i, thumb=thumbnail)
                elif i.endswith("jpg") or i.endswith("png") :
                  app.send_photo(chat_id, photo='/downloads'+i, caption=i)
