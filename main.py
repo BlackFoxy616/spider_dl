@@ -11,6 +11,78 @@ from pyrogram.types import (ReplyKeyboardMarkup, InlineKeyboardMarkup,
 import asyncio
 from datetime import *
 import pytz,yt_dlp
+import speedtest
+import geocoder
+from datetime import datetime
+
+def internet_speed_test():
+    st = speedtest.Speedtest()
+    
+    # Speedtest Info
+    upload_speed = st.upload() / 1_000_000  # Convert to MB/s
+    download_speed = st.download() / 1_000_000  # Convert to MB/s
+    ping = st.results.ping
+    time_stamp = datetime.utcnow().isoformat()
+
+    # Data Usage
+    data_sent = st.results.bytes_sent / (1024 ** 2)  # Convert to MB
+    data_received = st.results.bytes_received / (1024 ** 2)  # Convert to MB
+
+    # Speedtest Server Info
+    server_info = st.get_best_server()
+    server_name = server_info["host"]
+    server_country = server_info["country"]
+    server_sponsor = server_info["sponsor"]
+    server_latency = server_info["latency"]
+    server_latitude = server_info["lat"]
+    server_longitude = server_info["lon"]
+
+    # Client Details
+    public_ip = get_public_ip()
+    client_location = get_location()
+    client_latitude = client_location[0]
+    client_longitude = client_location[1]
+    client_country = client_location[2]
+    isp = st.results.client.get("isp", "Unknown")
+    isp_rating = 3.7  # Replace with the actual rating
+
+    # Build result dictionary
+    result = {
+        "Speedtest Info": {
+            "Upload": f"{upload_speed:.2f} MB/s",
+            "Download": f"{download_speed:.2f} MB/s",
+            "Ping": f"{ping:.3f} ms",
+            "Time": time_stamp,
+            "Data Sent": f"{data_sent:.2f} MB",
+            "Data Received": f"{data_received:.2f} MB",
+        },
+        "Speedtest Server": {
+            "Name": server_name,
+            "Country": server_country,
+            "Sponsor": server_sponsor,
+            "Latency": f"{server_latency:.3f} ms",
+            "Latitude": server_latitude,
+            "Longitude": server_longitude,
+        },
+        "Client Details": {
+            "IP Address": public_ip,
+            "Latitude": client_latitude,
+            "Longitude": client_longitude,
+            "Country": client_country,
+            "ISP": isp,
+            "ISP Rating": isp_rating,
+        }
+    }
+
+    return result,st.results.share()
+
+def get_public_ip():
+    return geocoder.ip('me').ip
+
+def get_location():
+    g = geocoder.ip('me')
+    return g.latlng + [g.country]
+  
 now=datetime.now(pytz.timezone("Asia/Kolkata"))
 
 #os.system("wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux")
@@ -361,10 +433,13 @@ async def answer(client, call):
                 
 @app.on_message(filters.command("speedtest"))
 async def start_command(client,message):
-    st = speedtest.Speedtest()
-    download_speed = st.download()
-    upload_speed = st.upload()
-    await app.send_photo(message.chat.id,photo=st.results.share(),caption=f"Download Speed: {download_speed / 10**6:.2f} Mbps\nUpload Speed: {upload_speed / 10**6:.2f} Mbps\nPing:{st.results.ping}")
+    result = internet_speed_test()
+    text=""
+    for category, data in result[0].items():
+        text+=f"\t《 {category} 》\n"
+        for key, value in data.items():
+            text+=f"{key}: {value}\n"
+    await app.send_photo(message.chat.id,photo=result[1],caption=text)
 
 
 @app.on_message(filters.command("leech"))
@@ -380,8 +455,10 @@ def process_links(client, message):
 def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
-    
-    download_and_sendfi(file_path,chat_id)
+    with open(file_path) as file:
+      for link in file.readlines():
+        download_and_sendar(link,chat_id)
+        time.sleep(3)
       
 
 
