@@ -13,7 +13,19 @@ from datetime import *
 import pytz,yt_dlp
 import geocoder
 from datetime import datetime
+import zipfile
 
+
+
+
+
+def zipper(zipname,files):
+       zip_name = f'{zipname}.zip'
+       with zipfile.ZipFile(zip_name, 'w') as zip_file:
+          for file in files:
+             zip_file.write(file, arcname=file)
+      return zip_name
+            
 def internet_speed_test():
     st = speedtest.Speedtest()
     
@@ -465,29 +477,34 @@ def process_links(client, message):
 def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
+    files=[]
     with open(file_path) as file:
-     sts = app.send_message(chat_id,text=f"Download Started....")
+     sts = app.send_message(chat_id,text=f"Download Started....\n\nNo.of Links :{len(file.readlines()}")
      try:
       for link in file.readlines():
+        app.edit_message_text(chat_id,sts.id,text=f"Downloading:{file.readlines().index(link)+1}of{len(file.readlines())}")
         os.system(f"wget {link} ")
+        
         for i in os.listdir():
-               if i.endswith("mp4") or i.endswith("mp3"):
+               if i.endswith("jpeg") or i.endswith("jpg") or i.endswith("png"):
+                  files.append(i)
+              
+               elif i.endswith("mp4") or i.endswith("mp3"):
                  thumbnail = f"{i.replace('.mp4', '.png')}"
                  os.system(f'''vcsi "{i}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
-                 app.send_video(chat_id, video=i, caption=i, thumb=thumbnail)
-               elif i.endswith("jpeg") or i.endswith("jpg") or i.endswith("png"):
-                  app.send_photo(chat_id, photo=i, caption=i)
-
-               try:
+                 app.send_video(chat_id, video=i, caption=i, thumb=thumbnail)   
+        zip_name = zipper(link.split("/")[-2],files)[0]
+        app.send_document(chat_id, document=zip_name, caption=zip_name)      
+        try:
                   os.remove(i)
                   os.remove(i.replace('.mp4', '.jpg'))
                   os.remove(i.replace('.mp4', '.png'))
                  
-               except:
+        except:
                    pass
 
      except Exception as error:
-        app.send_message(chat_id,text=f"Error occurred: {error}")
+        app.edit_message_text(chat_id,sts.id,text=f"Error occurred: {error}")
 
       
 
