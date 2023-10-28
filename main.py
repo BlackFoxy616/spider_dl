@@ -480,27 +480,23 @@ def handle_document(client, message):
     files=[]
     with open(file_path) as file:
      sts = app.send_message(chat_id,text=f"Download Started....\nNo.of Links :{len(file.readlines())}")
-     for link in file.readlines():
-        print(link,2)
+     for link in file.readlines():      
         app.edit_message_text(chat_id,sts.id,text=f"Downloading:{file.readlines().index(link)+1} of {len(file.readlines())}")
         os.system(f"wget {link} ")
-        print(file.readlines().index(link)+1)
-        for i in os.listdir():
-               if i.endswith("jpeg") or i.endswith("jpg") or i.endswith("png"):
-                  files.append(i)
-                  print(i,1)
-               elif i.endswith("mp4") or i.endswith("mp3"):
-                 thumbnail = f"{i.replace('.mp4', '.png')}"
-                 os.system(f'''vcsi "{i}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
-                 app.send_video(chat_id, video=i, caption=i, thumb=thumbnail)   
-        zip_name = zipper("photos",files)[0]
-        app.send_document(chat_id, document=zip_name, caption=zip_name)      
-        try:
+        if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
+           app.send_photo(chat_id,photo=link.split("/")[-1])
+        elif link.split("/")[-1].endswith("mp4") or link.split("/")[].endswith("mkv"):
+            thumbnail = f"{link.split("/")[-1].replace('.mp4', '.png')}"
+            os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
+            app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)   
+     #zip_name = zipper("photos",files)[0]
+     #app.send_document(chat_id, documentt=zip_name, caption=zip_name)      
+     try:
                   os.remove(i)
                   os.remove(i.replace('.mp4', '.jpg'))
                   os.remove(i.replace('.mp4', '.png'))
                  
-        except:
+     except:
                    pass
 
      #except Exception as error:
