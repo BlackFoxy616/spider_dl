@@ -485,7 +485,7 @@ def handle_document(client, message):
         os.system(f"wget {link} ")
         if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
            app.send_photo(chat_id,photo=link.split("/")[-1])
-        elif link.split("/")[-1].endswith("mp4") or link.split("/")[].endswith("mkv"):
+        elif link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
             thumbnail = f"{link.split("/")[-1].replace('.mp4', '.png')}"
             os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
             app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)   
