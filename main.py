@@ -9,7 +9,6 @@ from hurry.filesize import size
 from pyrogram.types import (ReplyKeyboardMarkup, InlineKeyboardMarkup,
                             InlineKeyboardButton)
 import asyncio
-import time
 from datetime import *
 import pytz,yt_dlp
 import geocoder
@@ -467,9 +466,9 @@ def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
     with open(file_path) as file:
-      for link in file.readlines():
-        download_and_sendar(link,chat_id)
-        time.sleep(3)
+      #for link in file.readlines():
+      links = file.readlines()
+    download_and_send_concurrently(link,chat_id,"a",None)
       
 
 
