@@ -466,9 +466,28 @@ def handle_document(client, message):
     chat_id = message.chat.id
     file_path = client.download_media(message.document)
     with open(file_path) as file:
-      #for link in file.readlines():
-      links = file.readlines()
-    download_and_send_concurrently(links,chat_id,"a",None)
+     try:
+      for link in file.readlines():
+        os.system("wget {link} -P '/downloads' ")
+        for i in os.listdir('/downloads'):
+               if i.endswith("mp4") or i.endswith("mp3"):
+                 thumbnail = f"{i.replace('.mp4', '.png')}"
+                 os.system(f'vcsi "{'/downloads'+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
+                 app.send_video(chat_id, video='/downloads'+i, caption=i, thumb=thumbnail)
+               elif i.endswith("jpg") or i.endswith("png") :
+                 app.send_photo(chat_id, photo='/downloads'+i, caption=i)
+
+               try:
+                  os.remove(i)
+                  os.remove(i.replace('.mp4', '.jpg'))
+                  os.remove(i.replace('.mp4', '.png'))
+                 
+               except:
+                   pass
+
+     except Exception as error:
+        app.send_message(chat_id,text=f"Error occurred: {error}")
+
       
 
 
