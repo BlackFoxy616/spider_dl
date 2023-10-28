@@ -468,7 +468,7 @@ def handle_document(client, message):
     with open(file_path) as file:
       #for link in file.readlines():
       links = file.readlines()
-    download_and_send_concurrently(link,chat_id,"a",None)
+    download_and_send_concurrently(links,chat_id,"a",None)
       
 
 
