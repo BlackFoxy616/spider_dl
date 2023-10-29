@@ -354,11 +354,11 @@ def bulker(chat_id,file_path):
     try:
      urls = file.read().split("\n")
      total,rm,up =len(urls),len(urls),0
-     sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
+     sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now()}")
      for link in urls:
         app.send_message(chat_id,text=link)
         files.append(link.split("/")[-1])
-        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
+        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now()}")
         if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
           os.system(f"aria2c {link}")
           app.send_photo(chat_id,photo=link.split("/")[-1], caption=link.split("/")[-1])
