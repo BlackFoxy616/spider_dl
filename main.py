@@ -350,31 +350,33 @@ def download_and_sendyt(chat_id, format_option, link):
 
 def bulker(chat_id,file_path):
   files=[]
-  with open(file_path) as file: 
+  with open(file_path) as file:
+    try:
      urls = file.read().split("\n")
      total,rm,up =len(urls),len(urls),0
-     sts = app.send_message(chat_id,text=f"Download Started\nNo.of Links:{total}\nDownloaded:{up}\nDownloading:{rm}")
+     sts = app.send_message(chat_id,text=f"Download Started\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
      for link in urls:
-        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nNo.of Links:{total}\nDownloaded:{up}\nDownloading:{rm}")
+        files.append(link.split("/")[-1])
+        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
         if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
           app.send_photo(chat_id,photo=link)
-        else:
+        elif link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
           os.system(f"wget {link}")
+          thumbnail = f"""{link.split("/")[-1].replace('.mp4', '.png')}"""
+          os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
+          app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
         rm-=1
         up+=1
-        if link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
-            thumbnail = f"""{link.split("/")[-1].replace('.mp4', '.png')}"""
-            os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
-            app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
      #zip_name = zipper("photos",files)[0]
      #app.send_document(chat_id, documentt=zip_name, caption=zip_name)      
      try:
-                  os.remove(i)
-                  os.remove(i.replace('.mp4', '.jpg'))
-                  os.remove(i.replace('.mp4', '.png'))
-                 
+          os.remove(i)
+          os.remove(i.replace('.mp4', '.jpg'))
+          os.remove(i.replace('.mp4', '.png')) 
      except:
-                   pass
+        pass
+    except:   
+         print("Error")
 
 
 def download_and_send_concurrently(links, chat_id,engine,formats):
