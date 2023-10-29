@@ -355,7 +355,7 @@ def bulker(chat_id,file_path,zip=False):
    
        urls = file.read().split()
        total,rm,up =len(urls),len(urls),0
-   sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())}")
+   sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())[:23]}")
    os.system(f"aria2c -i {file_path}")
    for file in os.listdir():
        if zip:
@@ -373,10 +373,11 @@ def bulker(chat_id,file_path,zip=False):
             app.send_video(chat_id, video=file, caption=file, thumb=thumbnail)
             rm-=1
             up+=1
-       app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())}")
+   app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())[:23]}")
    if zip:
         zip_name = zipper("photos",files)[0]
-        app.send_document(chat_id, documentt=zip_name, caption=zip_name)      
+        app.send_document(chat_id, documentt=zip_name, caption=zip_name) 
+        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nDownload Completed..\nTime:{str(datetime.now())[:23]}")
    else:
        for j in files:
          try:
