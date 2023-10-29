@@ -359,18 +359,18 @@ def bulker(chat_id,file_path,zip=False):
    os.system(f"aria2c -i {file_path}")
    for file in os.listdir():
        if zip:
-             files.append(link.split("/")[-1])
-             print(link.split("/")[-1])
+             files.append(file)
+             print(file)
              rm-=1
              up+=1
-       elif link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
-             app.send_photo(chat_id,photo=link.split("/")[-1], caption=link.split("/")[-1])
+       elif file.endswith("jpeg") or file.endswith("jpg") or file.endswith("png"):
+             app.send_photo(chat_id,photo=file, caption=file)
              rm-=1
              up+=1
-       elif link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
-            thumbnail = f"""{link.split("/")[-1].replace('.mp4', '.png')}"""
-            os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
-            app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
+       elif file.endswith("mp4") or file.endswith("mkv"):
+            thumbnail = f"""{file.replace('.mp4', '.png')}"""
+            os.system(f'''vcsi "{file}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
+            app.send_video(chat_id, video=file, caption=file, thumb=thumbnail)
             rm-=1
             up+=1
        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())}")
