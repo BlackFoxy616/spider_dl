@@ -377,8 +377,8 @@ def bulker(chat_id,file_path):
           os.remove(i.replace('.mp4', '.png')) 
      except:
         pass
-    except:   
-         print("Error")
+    except Exception as err:   
+         print(err)
 
 
 def download_and_send_concurrently(links, chat_id,engine,formats):
