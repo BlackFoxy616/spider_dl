@@ -518,7 +518,7 @@ def get_hrefs_handler(client,message):
         message.reply_text("Please provide a valid URL after the command.")
 
 @app.on_message(filters.command("zipleechget"))
-def get_hrefs_handler(client,message):
+def get_hrefs_handler2(client,message):
     chat_id = message.chat.id
     try:
         url = message.text.split()[1]
@@ -532,9 +532,11 @@ def get_hrefs_handler(client,message):
       
 
       
-
-
-
+@app.on_message(filters.command("shall"))
+def shall_command(client,message):
+       cmd = message.text.split()[1:]
+       result = subprocess.run(cmd, stdout=subprocess.PIPE)
+       message.reply_text(result.stdout)
 
 
 app.run()
