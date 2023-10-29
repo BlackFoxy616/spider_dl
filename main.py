@@ -355,8 +355,33 @@ def bulker(chat_id,file_path,zip=False):
    
        urls = file.read().split()
        total,rm,up =len(urls),len(urls),0
-   sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())[:23]}")
-   os.system(f"aria2c -i {file_path} --continue=true")
+   #sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())[:23]}")
+   cmd = ["aria2c" ,"-i" ,file_path,"--continue=true"]
+   process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+   sts = app.send_message(chat_id,text=f"Download Started....\nTime:{str(datetime.now())[:23]}")
+   st_id = sts.id
+   old = ""
+   for line in process.stdout:
+                print(line)
+                if '%' in line:
+                    spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
+                    siz=line.strip().split()[1].replace("/"," of ")[:-5]
+                    con = stats = f'<b>╭─  FileName : </b>{extract(link)[0]}\n'\
+                                  f'<b>├  Engine : </b>Yt-dlp\n'\
+                                  f'<b>├  Size : </b>{siz}\n'\
+                                  f'<b>├  Speed : </b>{spe}\n'\
+                                  f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time).split(":")[2].split(".")[0]}\n\n'
+                    if con != old:
+                       #print(old,con)
+                       app.edit_message_text(chat_id,st_id,text=con)
+                       old = con
+                       #print(old,con)
+
+   process.wait()
+
+   if process.returncode != 0:
+            raise Exception(f"Error occurred: {process.stderr.strip()}")
+
    for file in os.listdir():
        if zip and file.endswith("jpeg") or file.endswith("jpg") or file.endswith("png"):
              files.append(file)
