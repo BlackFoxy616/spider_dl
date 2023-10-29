@@ -516,6 +516,19 @@ def get_hrefs_handler(client,message):
     except IndexError:
         message.reply_text("Please provide a valid URL after the command.")
 
+@app.on_message(filters.command("zipleechget"))
+def get_hrefs_handler(client,message):
+    chat_id = message.chat.id
+    try:
+        url = message.text.split()[1]
+        hrefs = fetch_hrefs(url)
+        with open("urls.txt","w+") as urls:
+          for i in hrefs:
+              urls.write(url+i+"\n")
+        bulker(chat_id,"urls.txt",True)
+    except IndexError:
+        message.reply_text("Please provide a valid URL after the command.")
+      
 
       
 
