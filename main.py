@@ -496,7 +496,7 @@ def process_links(client, message):
 
 
 @app.on_message(filters.command("leechget"))
-async def get_hrefs_handler(client,message):
+def get_hrefs_handler(client,message):
     chat_id = message.chat.id
     try:
         url = message.text.split()[1]
