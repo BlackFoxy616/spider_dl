@@ -354,17 +354,18 @@ def bulker(chat_id,file_path):
      urls = file.read().split("\n")
      total,rm,up =len(urls),len(urls),0
      sts = app.send_message(chat_id,text=f"Download Started\nNo.of Links:{total}\nDownloaded:{up}\nDownloading:{rm}")
-     for link in urls:      
+     for link in urls:
         app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nNo.of Links:{total}\nDownloaded:{up}\nDownloading:{rm}")
-        os.system(f"wget {link}")
+        if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
+          app.send_photo(chat_id,photo=link)
+        else:
+          os.system(f"wget {link}")
         rm-=1
         up+=1
-        if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
-           app.send_photo(chat_id,photo=link.split("/")[-1])
-        elif link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
+        if link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
             thumbnail = f"""{link.split("/")[-1].replace('.mp4', '.png')}"""
             os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
-            app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)   
+            app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
      #zip_name = zipper("photos",files)[0]
      #app.send_document(chat_id, documentt=zip_name, caption=zip_name)      
      try:
