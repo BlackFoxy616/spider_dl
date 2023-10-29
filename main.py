@@ -356,6 +356,7 @@ def bulker(chat_id,file_path):
      total,rm,up =len(urls),len(urls),0
      sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
      for link in urls:
+        app.send_message(chat_id,text=link)
         files.append(link.split("/")[-1])
         app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
         if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
