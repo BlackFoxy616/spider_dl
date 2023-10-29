@@ -354,7 +354,7 @@ def bulker(chat_id,file_path):
     try:
      urls = file.read().split("\n")
      total,rm,up =len(urls),len(urls),0
-     sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now()}")
+     sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())}")
      for link in urls:
         app.send_message(chat_id,text=link)
         files.append(link.split("/")[-1])
