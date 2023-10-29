@@ -353,6 +353,7 @@ def bulker(chat_id,file_path):
   with open(file_path) as file:
     try:
      urls = file.read().split("\n")
+     print(urls)
      total,rm,up =len(urls),len(urls),0
      sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())}")
      for link in urls:
