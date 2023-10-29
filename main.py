@@ -375,7 +375,7 @@ def bulker(chat_id,file_path,zip=False):
             up+=1
    app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())[:23]}")
    if zip:
-        zip_name = zipper("photos",files)[0]
+        zip_name = zipper("photos",files)
         app.send_document(chat_id, document=zip_name, caption=zip_name) 
         app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nDownload Completed..\nTime:{str(datetime.now())[:23]}")
    else:
