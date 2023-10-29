@@ -361,7 +361,7 @@ def bulker(chat_id,file_path):
         app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())}")
         if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
           os.system(f"aria2c {link}")
-          app.send_photo(chat_id,photo=link.split("/")[-1], caption=link.split("/")[-1])
+          #app.send_photo(chat_id,photo=link.split("/")[-1], caption=link.split("/")[-1])
         elif link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
           print(link.split("/")[-1])
           os.system(f"aria2c {link}")
