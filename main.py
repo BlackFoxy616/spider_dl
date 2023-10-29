@@ -356,7 +356,7 @@ def bulker(chat_id,file_path,zip=False):
        urls = file.read().split()
        total,rm,up =len(urls),len(urls),0
    sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())[:23]}")
-   os.system(f"aria2c -i {file_path}")
+   os.system(f"aria2c -i {file_path} --continue=true")
    for file in os.listdir():
        if zip and file.endswith("jpeg") or file.endswith("jpg") or file.endswith("png"):
              files.append(file)
