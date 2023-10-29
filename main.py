@@ -355,7 +355,7 @@ def bulker(chat_id,file_path):
      total,rm,up =len(urls),len(urls),0
      sts = app.send_message(chat_id,text=f"Download Started\nNo.of Links:{total}\nDownloaded:{up}\nDownloading:{rm}")
      for link in urls:      
-        app.edit_message_text(chat_id,sts.id,text=text=f"Download Status:\nNo.of Links:{total}\nDownloaded:{up}\nDownloading:{rm}")
+        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nNo.of Links:{total}\nDownloaded:{up}\nDownloading:{rm}")
         os.system(f"wget {link}")
         rm-=1
         up+=1
