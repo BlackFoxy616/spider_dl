@@ -208,7 +208,7 @@ def download_and_sendar(link, chat_id):
                  app.send_photo(chat_id, photo="downloads/"+i, caption=i)
 
                try:
-                  os.remove(("downloads"+i)
+                  os.remove("downloads"+i)
                   os.remove(thumbnail)
                  
                except:
