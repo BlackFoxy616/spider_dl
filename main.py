@@ -374,10 +374,10 @@ def bulker(chat_id,file_path,zip=False):
             rm-=1
             up+=1
        app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}\nTime:{str(datetime.now())}")
-     if zip:
+   if zip:
         zip_name = zipper("photos",files)[0]
         app.send_document(chat_id, documentt=zip_name, caption=zip_name)      
-     else:
+   else:
        for j in files:
          try:
              os.remove(j)
