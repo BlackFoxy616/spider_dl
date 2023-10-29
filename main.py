@@ -362,6 +362,7 @@ def bulker(chat_id,file_path):
           os.system(f"aria2c {link}")
           app.send_photo(chat_id,photo=link.split("/")[-1])
         elif link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
+          print(link.split("/")[-1])
           os.system(f"aria2c {link}")
           thumbnail = f"""{link.split("/")[-1].replace('.mp4', '.png')}"""
           os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
