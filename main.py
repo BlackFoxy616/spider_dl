@@ -354,19 +354,19 @@ def bulker(chat_id,file_path):
     try:
      urls = file.read().split("\n")
      total,rm,up =len(urls),len(urls),0
-     sts = app.send_message(chat_id,text=f"Download Started\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
+     sts = app.send_message(chat_id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
      for link in urls:
         files.append(link.split("/")[-1])
         app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{total}\nDownloaded:{up}\nDownloading:{rm}")
         if link.split("/")[-1].endswith("jpeg") or link.split("/")[-1].endswith("jpg") or link.split("/")[-1].endswith("png"):
           os.system(f"aria2c {link}")
-          app.send_photo(chat_id,photo="downloads/"+link.split("/")[-1])
+          app.send_photo(chat_id,photo=link.split("/")[-1], caption=link.split("/")[-1])
         elif link.split("/")[-1].endswith("mp4") or link.split("/")[-1].endswith("mkv"):
           print(link.split("/")[-1])
           os.system(f"aria2c {link}")
           thumbnail = f"""{link.split("/")[-1].replace('.mp4', '.png')}"""
-          os.system(f'''vcsi "{"downloads/"+link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
-          app.send_video(chat_id, video="downloads/"+link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
+          os.system(f'''vcsi "{link.split("/")[-1]}" -g 2x1 --metadata-position hidden -o "{thumbnail}"''')
+          app.send_video(chat_id, video=link.split("/")[-1], caption=link.split("/")[-1], thumb=thumbnail)
         rm-=1
         up+=1
      #zip_name = zipper("photos",files)[0]
@@ -416,18 +416,6 @@ def start_command(client, message):
     )
     message.reply_text(help_text)
 
-@app.on_message(filters.command("get"))
-async def get_hrefs_handler(client,message):
-    try:
-        url = message.text.split()[1]
-        hrefs = fetch_hrefs(url)
-        with open("urls.txt","w+") as urls:
-          for i in hrefs:
-              urls.write(url+i+"\n")
-        await app.send_document(message.chat.id,document="urls.txt")
-
-    except IndexError:
-        message.reply_text("Please provide a valid URL after the command.")
 
 
 @app.on_message(filters.command("dl"))
@@ -506,14 +494,20 @@ def process_links(client, message):
         download_and_send_concurrently(links, chat_id,"a",None)
 
 
-@app.on_message(filters.document)
-def handle_document(client, message):
-    chat_id = message.chat.id
-    file_path = client.download_media(message.document)
-    bulker(chat_id,file_path)
 
-     #except Exception as error:
-     #  app.edit_message_text(chat_id,sts.id,text=f"Error occurred: {error}")
+@app.on_message(filters.command("leechget"))
+async def get_hrefs_handler(client,message):
+    chat_id = message.chat.id
+    try:
+        url = message.text.split()[1]
+        hrefs = fetch_hrefs(url)
+        with open("urls.txt","w+") as urls:
+          for i in hrefs:
+              urls.write(url+i+"\n")
+        bulker(chat_id,"urls.txt")
+    except IndexError:
+        message.reply_text("Please provide a valid URL after the command.")
+
 
       
 
