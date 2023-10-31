@@ -3,6 +3,7 @@ import time,csv,os,re
 import speedtest
 import subprocess
 import threading
+from urllib.parse import quote
 import requests
 from bs4 import BeautifulSoup
 from hurry.filesize import size
@@ -155,7 +156,7 @@ def download_and_sendar(link, chat_id):
     download_path = "downloads"
     os.makedirs(download_path, exist_ok=True) 
     if link.startswith("magnet"):
-        file_name = link.split("&")[1][4:]
+        file_name = quote(link.split("&")[1][4:])
     else:
         file_name = link.split("/")[-1]
     file_path = os.path.join(download_path, file_name)
@@ -203,7 +204,7 @@ def download_and_sendar(link, chat_id):
     if process.returncode == 0:
         for i in os.listdir("downloads"):
                if i.endswith("mp4") or i.endswith("mp3") or i.endswith("mkv"):
-                 thumbnail = f"{i.replace(i.split('.')[-1],png)}"
+                 thumbnail = f"""{i.replace(i.split('.')[-1],'png')}"""
                  os.system(f'vcsi "{"downloads/"+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
                  app.send_video(chat_id, video="downloads/"+i, caption=i, thumb=thumbnail)
                elif i.endswith("jpg") or i.endswith("png") :
