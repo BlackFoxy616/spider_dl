@@ -154,8 +154,12 @@ def extract(yturl):
 def download_and_sendar(link, chat_id):
     download_path = "downloads"
     os.makedirs(download_path, exist_ok=True)
-
-    file_name = link.split("/")[-1]  # Extracting the filename from the link
+    if link.startends("magnet"):
+      para=link.split("&")
+      for i in para:
+         file_name = i[4:]
+    else:
+       file_name = link.split("/")[-1]  # Extracting the filename from the link
     file_path = os.path.join(download_path, file_name)
     
     command = [
@@ -200,7 +204,7 @@ def download_and_sendar(link, chat_id):
 
     if process.returncode == 0:
         for i in os.listdir("downloads"):
-               if i.endswith("mp4") or i.endswith("mp3"):
+               if i.endswith("mp4") or i.endswith("mp3") or i.endswith("mkv"):
                  thumbnail = f"{i.replace('.mp4', '.png')}"
                  os.system(f'vcsi "{"downloads/"+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
                  app.send_video(chat_id, video="downloads/"+i, caption=i, thumb=thumbnail)
