@@ -156,7 +156,7 @@ def download_and_sendar(link, chat_id):
     download_path = "downloads"
     os.makedirs(download_path, exist_ok=True) 
     if link.startswith("magnet"):
-        file_name = quote(link.split("&")[1][4:])
+        file_name = unquote(link.split("&")[1][3:])
     else:
         file_name = link.split("/")[-1]
     file_path = os.path.join(download_path, file_name)
