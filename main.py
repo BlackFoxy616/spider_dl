@@ -153,8 +153,12 @@ def extract(yturl):
 
 def download_and_sendar(link, chat_id):
     download_path = "downloads"
-    os.makedirs(download_path, exist_ok=True)
-    file_name = link.split("&")[1][4:] if link.startswith("magnet") else link.split("/")[-1]file_path = os.path.join(download_path, file_name)
+    os.makedirs(download_path, exist_ok=True) 
+    if link.startswith("magnet"):
+        file_name = link.split("&")[1][4:]
+    else:
+        file_name = link.split("/")[-1]
+    file_path = os.path.join(download_path, file_name)
     
     command = [
         "aria2c",
