@@ -203,7 +203,7 @@ def download_and_sendar(link, chat_id):
     if process.returncode == 0:
         for i in os.listdir("downloads"):
                if i.endswith("mp4") or i.endswith("mp3") or i.endswith("mkv"):
-                 thumbnail = f"{i.replace(i.split(".")[-1],png)}"
+                 thumbnail = f"{i.replace(i.split('.')[-1],png)}"
                  os.system(f'vcsi "{"downloads/"+i}" -g 1x1 --metadata-position hidden -o "{thumbnail}"')
                  app.send_video(chat_id, video="downloads/"+i, caption=i, thumb=thumbnail)
                elif i.endswith("jpg") or i.endswith("png") :
