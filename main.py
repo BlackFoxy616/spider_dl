@@ -154,7 +154,7 @@ def extract(yturl):
 def download_and_sendar(link, chat_id):
     download_path = "downloads"
     os.makedirs(download_path, exist_ok=True)
-    if link.startends("magnet"):
+    if link.startswith("magnet"):
       para=link.split("&")
       for i in para:
          file_name = i[4:]
