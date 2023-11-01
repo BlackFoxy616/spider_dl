@@ -310,6 +310,34 @@ def bulker(app,chat_id,url,iszip=False):
         app.edit_message_text(chat_id,sts.id,text=f"Started Download......\nTime:{str(datetime.now())[:23]}")
         cmd = ["aria2c" ,"-i" ,file_path,"--continue=true","-d", download_path]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+        if not iszip:
+            Thread(target=send_files, args=(app,download_path, chat_id,shah(link))).start()
+        for line in process.stdout:
+                print(line)
+                if 'MiB' in line:
+                   spe=line.strip().split()[-2][3:].replace('MiB','MiB/s')
+                   siz=line.strip().split()[1].replace("/"," of ")[:-5]
+                   con = stats = f'<b>├  FileName : </b>{file_name}\n'\
+                             f'<b>├  Engine : </b>Aria2c\n'\
+                             f'<b>├  Size : </b>{siz}\n'\
+                             f'<b>├  Speed : </b>{spe}\n'\
+                             f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time)}\n\n'
+                  print(con)
+                  if con != old:
+                     #print(old,con)
+                     #app.edit_message_text(chat_id,st_id,text=con)
+                     old = con
+                     print(old)
+        
+                  # Extract download speed
+                  match = re.search(r'Speed: ([0-9.]+)MiB/s', line)
+                  if "MiB/s" in line :
+                    print(con)
+                    speed = line.split("|")[2].strip()
+                    #sp = app.edit_message_text(chat_id,st_id,text=f"Average Download Speed: {speed}")
+            
+
+        process.wait()
         #print(leng(),len(os.listdir(download_path)))
         while leng(str(shah(url))) != len(os.listdir(download_path)):
             app.edit_message_text(chat_id,sts.id,text=f"Download Status:\nTotal:{leng(str(shah(url)))}\nDownloaded:{len(os.listdir(download_path))}\nDownloading:{leng(str(shah(url)))-len(os.listdir(download_path))}\nTime:{str(datetime.now())[:23]}") 
