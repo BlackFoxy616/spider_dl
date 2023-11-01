@@ -249,7 +249,7 @@ def download_and_sendar(app,link, chat_id):
                              f'<b>├  Engine : </b>Aria2c\n'\
                              f'<b>├  Size : </b>{siz}\n'\
                              f'<b>├  Speed : </b>{spe}\n'\
-                             f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time).split(":")[1:2].split(".")[0]}\n\n'
+                             f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time)}\n\n'
                if con != old:
                  #print(old,con)
                  app.edit_message_text(chat_id,st_id,text=con)
