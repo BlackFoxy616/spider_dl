@@ -94,7 +94,7 @@ def send_files(app, local_directory, chat_id):
     for file_name in files:
         if terminate_flag:
             break
-        Thread(target=send_file, args=(app,file_path, chat_id,speed)).start()
+        Thread(target=send_file, args=(app,file_path, chat_id)).start()
    
 
 
