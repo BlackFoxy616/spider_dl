@@ -322,16 +322,16 @@ def bulker(app,chat_id,url,iszip=False):
                              f'<b>├  Size : </b>{siz}\n'\
                              f'<b>├  Speed : </b>{spe}\n'\
                              f'<b>╰  Time Taken: </b>{str(datetime.now()-start_time)}\n\n'
-                  print(con)
-                  if con != old:
+                print(con)
+                if con != old:
                      #print(old,con)
                      #app.edit_message_text(chat_id,st_id,text=con)
                      old = con
                      print(old)
         
-                  # Extract download speed
-                  match = re.search(r'Speed: ([0-9.]+)MiB/s', line)
-                  if "MiB/s" in line :
+                # Extract download speed
+                match = re.search(r'Speed: ([0-9.]+)MiB/s', line)
+                if "MiB/s" in line :
                     print(con)
                     speed = line.split("|")[2].strip()
                     #sp = app.edit_message_text(chat_id,st_id,text=f"Average Download Speed: {speed}")
