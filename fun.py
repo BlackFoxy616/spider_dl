@@ -225,7 +225,7 @@ def download_and_sendar(app,link, chat_id):
     file_name = link.split("&")[1][4:] if link.startswith("magnet") else link.split("/")[-1]
     file_path = os.path.join(download_path, file_name)
     sts = app.send_message(chat_id,text=f"Download Started....")
-    Thread(target=send_files, args=(app, ".", chat_id,shah(link))).start()
+    Thread(target=send_files, args=(app, ".", chat_id)).start()
     print(file_name)
     command = [
         "aria2c",
@@ -311,7 +311,7 @@ def bulker(app,chat_id,url,iszip=False):
         cmd = ["aria2c" ,"-i" ,file_path,"--continue=true","-d", download_path]
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         if not iszip:
-            Thread(target=send_files, args=(app,download_path, chat_id,shah(link))).start()
+            Thread(target=send_files, args=(app,download_path, chat_id)).start()
         for line in process.stdout:
                 print(line)
                 if 'MiB' in line:
