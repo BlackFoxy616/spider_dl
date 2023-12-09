@@ -1,4 +1,4 @@
-pyrogram
+pyrofork
 beautifulsoup4
 hurry.filesize
 tgcrypto
