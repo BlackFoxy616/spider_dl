@@ -50,16 +50,15 @@ shared_data = {}
 
 
 
-
 @app.on_message(filters.command(["start", "help"]))
-def start_command(client, message):
+async def start_command(client, message):
     help_text = (
         "Send me links using the following commands:\n"
         "/ytdl <link> - Download using yt-dlp\n"
-        "/leech <link1> <link2> ... - Bulk download using aria2c\n"
+        "/leech <link1> ... - download using aria2c\n"
         "/speedtest - To Test Speed"
     )
-    message.reply_text(help_text)
+    await message.reply_text(help_text)
 
 
 
@@ -99,8 +98,7 @@ async def answer(client, call):
          id = call.message.id
          unique_id = data[1]
          link = shared_data[int(unique_id)]
-         cmd = f"""yt-dlp --downloader aria2c -P "downloads" {format} {link}"""
-         print(cmd)
+         cmd = f"""./yt-dlp --downloader aria2c -P "downloads" {format} {link}"""
          
          os.system(cmd)
          for i in os.listdir("downloads"):
@@ -120,8 +118,8 @@ async def answer(client, call):
              
                 
 @app.on_message(filters.command("speedtest"))
-def start_command(client,message):
-    wait=app.send_message(chat_id=message.chat.id,text="Running Speed Test. Wait about some secs.",reply_to_message_id=message.id)
+async def start_command(client,message):
+    wait= await app.send_message(chat_id=message.chat.id,text="Running Speed Test. Wait about some secs.",reply_to_message_id=message.id)
     result = internet_speed_test()
     text=""
     for category, data in result[0].items():
@@ -137,39 +135,18 @@ def start_command(client,message):
                 text+=f'<b>╰─ {key}: {value}\n'
             else:
                  text+=f'<b>├ {key}: {value}\n'
-    wait.delete()
-    app.send_photo(chat_id=message.chat.id,photo=result[1],caption=text,
+    await wait.delete()
+    await app.send_photo(chat_id=message.chat.id,photo=result[1],caption=text,
 reply_to_message_id=message.id)
 
 
 @app.on_message(filters.command("leech"))
-def process_links(client, message):
+async def process_links(client, message):
     chat_id = message.chat.id
     links = message.text.split()[1:]
-
+    print(links)
     if links:
         download_and_send_concurrently(app,links, chat_id,"a",None)
-
-
-
-@app.on_message(filters.command("leechget"))
-def get_hrefs_handler(client,message):
-    chat_id = message.chat.id
-    try:
-        url = message.text.split()[1]
-        bulker(app,chat_id,url)
-    except IndexError:
-        message.reply_text("Please provide a valid URL after the command.")
-
-@app.on_message(filters.command("zipleechget"))
-def get_hrefs_handler2(client,message):
-    chat_id = message.chat.id
-    try:
-        url = message.text.split()[1]
-        bulker(app,chat_id,url,True)
-    except IndexError:
-        message.reply_text("Please provide a valid URL after the command.")
-      
 
 
 
@@ -180,20 +157,20 @@ def get_hrefs_handler2(client,message):
 
       
 @app.on_message(filters.command("shell"))
-def shall_command(client,message):
+async def shall_command(client,message):
        cmd = message.text.split()[1:]
        result = subprocess.run(cmd, stdout=subprocess.PIPE)
-       message.reply_text(result.stdout)
+       await message.reply_text(result.stdout)
 
 
 
 
 @app.on_message(filters.command("sendfiles"))
-def send_files_command(client, message):
+async def send_files_command(client, message):
     global terminate_flag
     chat_id = message.chat.id
     upload_id = shah(message.text.split()[-1])
-    sts = app.send_message(chat_id,text=f"Download Started....")
+    sts = await app.send_message(chat_id,text=f"Download Started....")
     files[upload_id]=[sts.id,0,total]
     local_directory = '.'     
     terminate_flag = False
