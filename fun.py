@@ -291,6 +291,27 @@ def leng(name):
     with open(f"{name}.txt") as file:
         return len(file.read().split())
 
+
+
+
+def bunkr(url):
+        urls = []
+        response = requests.get(url)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, 'html.parser')
+            tag = soup.find_all("a")
+            if tag:
+                for i in tag:
+                    if len(i.get("href")) > 30:
+                        src = requests.get("https://bunkrr.su" +i.get("href"))
+                        if src.status_code == 200:
+                            sp = BeautifulSoup(src.text, "html.parser")
+                            for source in sp.find_all('source'):
+                                link = source.get("src")
+                                urls.append(link)
+        return urls
+
+
 def bulker(app,chat_id,url,iszip=False):
     try:  
         download_path = f"downloads/{str(shah(url))}/"
@@ -367,19 +388,22 @@ def bulker(app,chat_id,url,iszip=False):
 
 def download_and_send_concurrently(app,links, chat_id,engine,formats):
     threads = []
-    if engine=="y":
-        for link in links:
-           thread = threading.Thread(target=download_and_sendyt, args=(app,chat_id,formats,link))
-           threads.append(thread)
-           thread.start()
-    else:
-        for link in links:
-          thread = threading.Thread(target=download_and_sendar, args=(app,link, chat_id))
-          threads.append(thread)
-          thread.start()
+    for link in links:
+        if "bunk" in link:
+          bunk_links = bunkr(link)
+          print(bunk_links)
+          for blink in bunk_links:
+            print(blink)
+            thread = threading.Thread(target=download_and_sendar, args=(app,blink, chat_id))
+            threads.append(thread)
+            thread.start()
+        else:
+            print(link)
+            thread = threading.Thread(target=download_and_sendar, args=(app,link, chat_id))
+            threads.append(thread)
+            thread.start()
+           
 
 
     for thread in threads:
         thread.join()
-
-    
